@@ -1,0 +1,6 @@
+__pycache__/
+.ipynb_checkpoints/
+.pytest_cache/
+node_modules/
+venv/
+app-whoami/node_modules/*

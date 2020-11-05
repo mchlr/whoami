@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+    # Fast API service
+    api-whoami:
+        image: api-whoami
+        build:
+            context: ./api_whoami
+            dockerfile: Dockerfile
+        ports:
+            - 8000
+
+    # Angular service
+    app-whoami:
+        image: app-whoami
+        build:
+            context: ./app-whoami
+            dockerfile: Dockerfile
+        deploy:
+            labels:
+                - "traefik.enable=true"
+                - "traefik.http.routers.whoami.rule=Host(`app-whoami.localhost`)"
+                - "traefik.http.routers.whoami.entrypoints=web"
+
+        ports:
+            - 80
+
+    # Redis service for redis things.
+    redis-whoami:
+        image: redis
+        ports:
+            - 6379
+        volumes:
+            - redis-whoami-vol:/data
+
+    # MySQL service for redis things.
+    mysql-whoami:
+        image: redis
+        environment:
+            - MYSQL_ROOT_PASSWORD=angular-fastapi
+            - MYSQL_DATABASE=angular-fastapi
+            - MYSQL_USER=angular-fastapi
+            - MYSQL_PASSWORD=angular-fastapi
+        ports:
+            - 3306
+        volumes:
+            - mysql-whoami-vol:/data
+
+    # Postgres service for postgres things.
+    postgres-whoami:
+        image: postgres
+        ports:
+            - 5432
+        volumes:
+            - postgres-whoami-vol:/var/lib/postgresql
+
+volumes:
+    redis-whoami-vol:
+    postgres-whoami-vol:
+    mysql-whoami-vol:

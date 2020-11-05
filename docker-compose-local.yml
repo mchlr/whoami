@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+    # Redis service for redis things.
+    redis-whoami:
+        image: redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis-whoami-vol:/data
+
+    # MySQL service for mysql things.
+    mysql-whoami:
+        image: redis
+        environment:
+            - MYSQL_ROOT_PASSWORD=angular-fastapi
+            - MYSQL_DATABASE=angular-fastapi
+            - MYSQL_USER=angular-fastapi
+            - MYSQL_PASSWORD=angular-fastapi
+        ports:
+            - "3306:3306"
+        volumes:
+            - mysql-whoami-vol:/data
+
+volumes:
+    redis-whoami-vol:
+    postgres-whoami-vol:
+    mysql-whoami-vol:

@@ -1,0 +1,9 @@
+<h4>plz enter ur name:</h4>
+<input #playerName (keyup.enter)="this.registerName(playerName.value)">
+
+<h4>current playaz</h4>
+<ul>
+    <li *ngFor="let playa of playerlist">
+        <app-player-card [player]=playa></app-player-card>
+    </li>
+</ul>
