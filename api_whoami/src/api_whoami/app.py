@@ -16,32 +16,14 @@ from pydantic import BaseModel
 from starlette.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
-
-DESC = """
-# Welcome to the documentation for the whoami API layer!
-
-To return back to the application, please [click here](http://localhost:4200)
-
-"""
-
 app = FastAPI(
     title="whoami",
-    description=DESC,
-    version="2.5.0",
+    version="0.0.1",
 )
 # TODO: Restrict origins to the hostname.
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"], expose_headers=["*"])
 LOGGER = logging.getLogger(__name__)
 START_TIME = time.time()
-
-# Auto Generated
-
-SECRET_KEY = "09d25e094faa6ca2556c818126b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 # WhoAmI
 playerlist = {}
@@ -70,7 +52,7 @@ async def registerPlayer(playerName: str):
     # Update currently connected players
     await sendPlayerlist()
     # Complete registration
-    return {"status": "success", "id": pid}
+    return {"status": "success", "id": pid, "playerlist": [{"id": pid, "name":playerlist[pid]["name"]} for pid in playerlist]}
 
 # Notify current players about a new player
 async def sendPlayerlist():

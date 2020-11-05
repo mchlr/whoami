@@ -33,6 +33,7 @@ export class GameService {
             this.myName = name;
             this.myPid = data.id
             this.socket = this.connectSocket(this.myPid);
+            this.uiRef.setPlayerList(data.playerlist)
 
             resolve(data)
           }
