@@ -4,9 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class GameService {
-
   private readonly baseUri: string = "http://localhost:8000/";
-
 
   private myName: string;
   private myPid: string;
@@ -52,7 +50,7 @@ export class GameService {
   }
   
   private onSocketMessage(msg) {
-    console.log("[SOCKET]: ", msg);
+    console.log("[SOCKET] - Got Message");
     let obj = JSON.parse(msg.data);
     console.log("Parsed Response:");
     console.log(obj);
@@ -61,6 +59,14 @@ export class GameService {
       case "playerlist":
         this.playerlist = obj.data;
         console.log(this.uiRef.setPlayerList(this.playerlist));
+        break;
+      case "name-poll":
+        console.log("Opening Name-Dialog");
+        this.uiRef.processNamePoll(); 
+        break;
+      case "next-player":
+        // TODO: Deselect previous player
+        // TODO: Select new player with fancy color
         break;
     }
 
@@ -71,6 +77,24 @@ export class GameService {
     // Maybe stringify every msg from an object;
     this.socket.send(msg);
   }
+
+  sendStartMessage() {
+    this.sendSocketMessage(JSON.stringify({ "type":"game-state", "value":"start" }));
+  }
+
+  public sendCorrectAnswer() {
+    this.sendSocketMessage(JSON.stringify({ "type":"answer", "value":true }));
+  }
+  
+  public sendWrongAnswer() {
+    this.sendSocketMessage(JSON.stringify({ "type":"answer", "value":false }));
+  }
+
+  sendNameSuggestion(name: string) {
+    this.sendSocketMessage(JSON.stringify({ "type":"name-suggestion", "value":name }));
+
+  }
+  
 
 
   public getSocket() {
