@@ -67,20 +67,24 @@ export class GameService {
         break;
       case "player-sequence":
         this.addTargetsToPlayers(obj.data);
+        break;
       case "next-player":
-        // TODO: Deselect previous player
-        // TODO: Select new player with fancy color
+        this.changeActivePlayer(obj.data);
         break;
     }
-
   }
 
-
-
+  // This function does IN-PLACE adding of the targetNames
+  // Targetnames are the Names, the players have to guess in order to win; 
   private addTargetsToPlayers(obj: any) {
     for(let x of this.playerlist) {
       x["target"] = obj.find(y => x.pid === y.pid).target; 
     }
+  }
+
+  private changeActivePlayer(pid){
+    this.playerlist.forEach(x => x["isActive"] = false);
+    this.playerlist.find(x => x.pid === pid)["isActive"] = true;
   }
 
   private sendSocketMessage(msg) {
