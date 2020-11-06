@@ -175,13 +175,24 @@ async def onMessage(socket):
         data = await socket.receive_json()
         await Actions.eval(data["type"], data["value"], pid)
     except WebSocketDisconnect:
-        game.removePlayer(pid)
-        del connections[pid]
-        await socket.close()
-        await sendPlayerlist()
+        manageDisconnect(pid, socket)
 
 async def startGame():
     # Send a push message to all active players    
     for pid in connections: 
         connections[pid]["connection"].send_text(json.dumps({"type":"gamestate", "value":"start"}))
 
+async def manageDisconnect(pid, socket):
+    game.removePlayer(pid)
+
+    '''
+    TODO: 
+    => Currently active player has to be reselected.
+    => sendPlayerlist() needs to return the nameselection (=> playersequence) if there is one already present.
+    
+    '''
+
+
+    del connections[pid]
+    await socket.close()
+    await sendPlayerlist()
