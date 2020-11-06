@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { GameService } from '../service/game.service';
 
 @Component({
   selector: 'app-player-card',
@@ -7,12 +8,15 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class PlayerCardComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public service: GameService
+  ) { }
 
   @Input() player;
 
 
   ngOnInit() {
+    console.log("Got Player: ", this.player);
   }
 
 }

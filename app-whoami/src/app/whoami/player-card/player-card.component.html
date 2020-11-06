@@ -1,4 +1,12 @@
 <mat-card>
-    <mat-card-title>{{player.name}}</mat-card-title>
-    <mat-card-content>Name</mat-card-content>
+    <mat-card-title>{{ player.name }}</mat-card-title>
+    <mat-card-content>
+        {{ player.target }}
+
+        <div *ngIf="this.player.pid === this.service.getOwnPid()">
+            <button (click)="this.answerCorrect()">Richtige Antwort</button>
+            <button (click)="this.answerWrong()">Falsche Antwort</button>
+            <button>Gewonnen</button>
+        </div>
+    </mat-card-content>
 </mat-card>
