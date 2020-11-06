@@ -141,8 +141,8 @@ async def sendPlayerlist():
 
 
 async def sendCurrentPlayer():
-    np = game.getCurrentPlayer()
-
+    # Send only the next player's pid in order to avoid leaking a targetName
+    np = game.getCurrentPlayer()["pid"]
     print("Next player: ", np)
     for pid in connections:
             if(connections[pid] is not None):
