@@ -29,11 +29,12 @@ export class GameService {
           if (data.status === "success") {
             // Initialize required informations after registering a for yourself;
             this.myName = name;
-            this.myPid = data.id
+            this.myPid = data.pid
             this.socket = this.connectSocket(this.myPid);
-            this.uiRef.setPlayerList(data.playerlist)
+            this.playerlist = data.playerlist
 
-            resolve(data)
+            console.log("Got new Playerlist", this.playerlist);
+            resolve(true)
           }
         });
     });
@@ -64,12 +65,22 @@ export class GameService {
         console.log("Opening Name-Dialog");
         this.uiRef.processNamePoll(); 
         break;
+      case "player-sequence":
+        this.addTargetsToPlayers(obj.data);
       case "next-player":
         // TODO: Deselect previous player
         // TODO: Select new player with fancy color
         break;
     }
 
+  }
+
+
+
+  private addTargetsToPlayers(obj: any) {
+    for(let x of this.playerlist) {
+      x["target"] = obj.find(y => x.pid === y.pid).target; 
+    }
   }
 
   private sendSocketMessage(msg) {
@@ -103,5 +114,9 @@ export class GameService {
 
   public getPlayerList() {
     return this.playerlist;
+  }
+
+  public getOwnPid() {
+    return this.myPid;
   }
 }
