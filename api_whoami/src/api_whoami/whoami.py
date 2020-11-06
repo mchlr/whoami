@@ -24,9 +24,21 @@ class WhoAmI:
             "name": n,
             "suggestion": None
         }
+    
+    def removePlayer(self, pid): 
+        # Works fine!
+        del self.playerlist[pid]
+        test = self.getPlayerByPid(pid)
+        if test is not 0 or not -1 :
+            print("Test? ", test)
+            self.playersequence.remove(test)
 
     def addNameSuggestion(self, pid, n):
         self.playerlist[pid]["suggestion"] = n
+
+        print("Name Suggestion => Playerlist:")
+        print(self.playerlist)
+
         return all([self.playerlist[pid]["suggestion"] is not None for pid in self.playerlist])
 
 
@@ -58,10 +70,14 @@ class WhoAmI:
         return self.playersequence[pIdx]
 
     def getPlayerByPid(self, pId):
-        for x in self.playersequence:
-            if x["pid"] == pId:
-                return x
-        return -1
+        if(len(self.playersequence) > 0):
+            for x in self.playersequence:
+                print("iter: ", x)
+                if x["pid"] == pId:
+                    return x
+            return -1
+        else:
+            return 0
 
 
 
@@ -71,7 +87,7 @@ class WhoAmI:
 
 
     def getPlayerList(self):
-        return [{"id": pid, "name":self.playerlist[pid]["name"]} for pid in self.playerlist]   
+        return [{"pid": pid, "name":self.playerlist[pid]["name"]} for pid in self.playerlist]   
     
     def getPlayerCount(self):
         return len(self.playerlist)
