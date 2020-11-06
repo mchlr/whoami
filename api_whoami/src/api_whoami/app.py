@@ -4,13 +4,15 @@ import logging
 import time
 import os
 from typing import List
+
+from starlette.websockets import WebSocketDisconnect
 from whoami import GameState, WhoAmI
 import jwt
 import json
 import uvicorn
 from uuid import uuid4
 from enum import Enum
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt import PyJWTError
@@ -72,20 +74,15 @@ class Actions():
             print("Correct answer recorded! :)")
 
     async def ProcessNameSuggestion(val, pid):
-        print("Now adding Name: ", val, pid)
         if game.addNameSuggestion(pid, val):
-            # All players have chosen! Let's start!
-            print("asd")
+            # All players have chosen => LETS GO!
             seq = game.generateSequence()
-            print("got new name sequence and stuff")
-            print(seq)
             await sendPlayerSequence(seq)
-
-
             await sendCurrentPlayer()
 
         else:
-            print("")
+            # Not every player has proposed a name yet => Do nothing
+            print()
         
 
         
@@ -115,7 +112,7 @@ async def registerPlayer(playerName: str):
     # Update currently connected players
     await sendPlayerlist()
     # Complete registration
-    return {"status": "success", "id": pid, "playerlist": game.getPlayerList()}
+    return {"status": "success", "pid": pid, "playerlist": game.getPlayerList()}
 
 
 
@@ -173,19 +170,16 @@ async def onMessage(socket):
         if(connections[xx] == socket):
             pid = xx
 
-    print("Getting Data from id: ", pid)
-    # TODO: Create a switch-case that handels the game state according to the received message;
-
     # Throws exception, if the socket is closed; 
-    data = await socket.receive_json()
-    print("Now Testing Actions")
-    await Actions.eval(data["type"], data["value"], pid)
-    print("Eval done^^")
+    try:
+        data = await socket.receive_json()
+        await Actions.eval(data["type"], data["value"], pid)
+    except WebSocketDisconnect:
+        game.removePlayer(pid)
+        del connections[pid]
+        await socket.close()
+        await sendPlayerlist()
 
-
-    print("Got data via ws: ", data)
-    MessageType(data["type"])
-    
 async def startGame():
     # Send a push message to all active players    
     for pid in connections: 
