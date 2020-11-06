@@ -1,7 +1,22 @@
 <h4>plz enter ur name:</h4>
 <input #playerName (keyup.enter)="this.registerName(playerName.value)">
 
+<button (click)="this.sendStart()">Send Start</button>
+
+<button (click)="this.processNamePoll()">Open Prompt</button>
+
+
+
 <h4>current playaz</h4>
 <div>
     <app-player-card *ngFor="let playa of playerlist" [player]=playa></app-player-card>
+</div>
+
+
+
+<div>
+    <button (click)="this.answerCorrect()">Richtige Antwort</button>
+    <button (click)="this.answerWrong()">Falsche Antwort</button>
+
+    <button>Gewonnen</button>
 </div>
