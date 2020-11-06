@@ -56,14 +56,15 @@ class WhoAmI:
 
 
     # Methods for cycling through players
-    def nextPlayer(self):
-        self.currentPlayerIdx += 1
-        if(self.currentPlayerIdx < len(self.playersequence)):
-            return self.getPlayerByIndex(self.currentPlayerIdx)
-        else:
-            # Cycle complete
-            self.currentPlayerIdx = 0
-            return self.getPlayerByIndex(self.currentPlayerIdx)
+    def nextPlayer(self, pid):
+        if(self.getPlayerByIndex(self.currentPlayerIdx)["pid"] is pid):
+            self.currentPlayerIdx += 1
+            if(self.currentPlayerIdx < len(self.playersequence)):
+                return self.getPlayerByIndex(self.currentPlayerIdx)
+            else:
+                # Cycle complete
+                self.currentPlayerIdx = 0
+                return self.getPlayerByIndex(self.currentPlayerIdx)
 
 
     def getPlayerByIndex(self, pIdx):
@@ -84,7 +85,6 @@ class WhoAmI:
 
     def getCurrentPlayer(self):
         return self.playersequence[self.currentPlayerIdx]   
-
 
     def getPlayerList(self):
         return [{"pid": pid, "name":self.playerlist[pid]["name"]} for pid in self.playerlist]   

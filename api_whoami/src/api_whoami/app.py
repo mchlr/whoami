@@ -55,7 +55,7 @@ class Actions():
 
         if parsed is MessageType.ANSWER:
             print("=> ProcessAnswer(val)")
-            await Actions.ProcessAnswer(val)
+            await Actions.ProcessAnswer(pid, val)
 
         if parsed is MessageType.NAMESUGGESTION:
             print("=> ProcessNameSuggestion(val, pid)")
@@ -66,9 +66,9 @@ class Actions():
         if val == "start":
             await sendNamePoll()
             
-    async def ProcessAnswer(val):
+    async def ProcessAnswer(pid, val):
         if not val:
-            game.nextPlayer()
+            game.nextPlayer(pid)
             await sendCurrentPlayer()
         else:
             print("Correct answer recorded! :)")
