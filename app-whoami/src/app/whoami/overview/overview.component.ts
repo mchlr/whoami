@@ -16,11 +16,9 @@ export class OverviewComponent implements OnInit {
     public dialog: MatDialog
   ) { }
 
-  public name: string = "Peter"; 
-
-  public displayName;
+  public hasSuggestedName = false;
   public playerlist = [];
-
+  
 
   ngOnInit() {
     this.service.setUiReference(this);
@@ -31,9 +29,7 @@ export class OverviewComponent implements OnInit {
     console.log("Haz service: ", this.service);
 
     // Do stuff with service here;
-    this.service.registerName(name).then(x => {
-      console.log(this.service.getSocket());
-    });
+    this.service.registerName(name);
 
   }
 
@@ -58,10 +54,12 @@ export class OverviewComponent implements OnInit {
   }
 
   public processNamePoll() {
-    this.dialog.open(NamePromptComponent).afterClosed().subscribe(result => {
-      console.log("Sending following Name to API: ", result);
-      this.service.sendNameSuggestion(result);
-    })
+    if(!this.hasSuggestedName) {
+      this.dialog.open(NamePromptComponent).afterClosed().subscribe(result => {
+        this.hasSuggestedName = true;
+        this.service.sendNameSuggestion(result);
+      })
+    }
   }
 
 

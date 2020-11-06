@@ -8,15 +8,12 @@
 
 
 <h4>current playaz</h4>
-<div>
-    <app-player-card *ngFor="let playa of playerlist" [player]=playa></app-player-card>
+<div class="grid-container">
+    <app-player-card class="grid-item" *ngFor="let playa of this.service.getPlayerList()" [player]=playa></app-player-card>
 </div>
 
 
 
 <div>
-    <button (click)="this.answerCorrect()">Richtige Antwort</button>
-    <button (click)="this.answerWrong()">Falsche Antwort</button>
-
-    <button>Gewonnen</button>
+    
 </div>
