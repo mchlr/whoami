@@ -19,4 +19,17 @@ export class PlayerCardComponent implements OnInit {
     console.log("Got Player: ", this.player);
   }
 
+  public answerWrong() {
+    this.service.sendWrongAnswer();
+  }
+
+  public answerCorrect() {
+    this.service.sendCorrectAnswer();
+  }
+
+  // This function serves only a debug/test purpose. Remove after done;
+  public logMe() {
+    console.log(this.player)
+  }
+
 }

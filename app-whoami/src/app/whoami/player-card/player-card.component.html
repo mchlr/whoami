@@ -1,12 +1,23 @@
-<mat-card>
+<mat-card [ngStyle]="{'background-color': this.player.isActive ? '#fafa' : '#fff' }">
     <mat-card-title>{{ player.name }}</mat-card-title>
     <mat-card-content>
         {{ player.target }}
 
         <div *ngIf="this.player.pid === this.service.getOwnPid()">
-            <button (click)="this.answerCorrect()">Richtige Antwort</button>
-            <button (click)="this.answerWrong()">Falsche Antwort</button>
+            <button (click)="this.answerCorrect()">✔️</button>
+            <button (click)="this.answerWrong()">❌</button>
             <button>Gewonnen</button>
+
+            <button (click)="this.logMe()">Log Current Player</button>
         </div>
     </mat-card-content>
 </mat-card>
+
+
+<ng-template #active>
+    <mat-card style="background-color: green;"></mat-card>
+</ng-template>
+
+<ng-template #inActive>
+    <mat-card></mat-card>
+</ng-template>
