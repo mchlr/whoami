@@ -10,7 +10,7 @@ from whoami import GameState, WhoAmI
 import jwt
 import json
 import uvicorn
-from uuid import uuid4
+from uuid import NAMESPACE_X500, uuid4
 from enum import Enum
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi import Depends, FastAPI, HTTPException, status
@@ -38,6 +38,7 @@ class MessageType(Enum):
     STATE = "game-state"
     ANSWER = "answer"
     NAMESUGGESTION = "name-suggestion"
+    WINCHALLENGE = "challenge-win"
 
 class Actions():
     # tt = type: MessageType
@@ -51,29 +52,35 @@ class Actions():
 
         if parsed is MessageType.STATE:
             print("=> ProcessState(val)")
-            await Actions.ProcessState(val)
+            await Actions.processState(val, pid)
 
         if parsed is MessageType.ANSWER:
             print("=> ProcessAnswer(val)")
-            await Actions.ProcessAnswer(pid, val)
+            await Actions.processAnswer(val, pid)
 
         if parsed is MessageType.NAMESUGGESTION:
             print("=> ProcessNameSuggestion(val, pid)")
-            await Actions.ProcessNameSuggestion(val, pid)
+            await Actions.processNameSuggestion(val, pid)
+
+        if parse is MessageType.WINCHALLENGE:
+            print("=> ProcessWinChallenge")
+            await Actions.challengeWin(val, pid)
 
 
-    async def ProcessState(val):
+    async def processState(val, pid):
         if val == "start":
             await sendNamePoll()
+        if val == "end":
+            print("TODO: Implement stuff when the current game is finished")
             
-    async def ProcessAnswer(pid, val):
+    async def processAnswer(val, pid):
         if not val:
             game.nextPlayer(pid)
             await sendCurrentPlayer()
         else:
             print("Correct answer recorded! :)")
 
-    async def ProcessNameSuggestion(val, pid):
+    async def processNameSuggestion(val, pid):
         if game.addNameSuggestion(pid, val):
             # All players have chosen => LETS GO!
             seq = game.generateSequence()
@@ -83,6 +90,9 @@ class Actions():
         else:
             # Not every player has proposed a name yet => Do nothing
             print()
+
+    async def challengeWin(val, pid):
+        sendWinChallenge(pid, val)
         
 
         
@@ -159,9 +169,17 @@ async def sendPlayerSequence(seq):
         payload = [{"pid": s["pid"], "target": s["target"] if s["pid"] != pid else "???"} for s in seq]
         await connections[pid].send_text(json.dumps({"type":"player-sequence", "data":payload}))
 
+async def sendWinChallenge(initPid, name):
+    print("Sending win challenge...")
+    for pid in connections:
+        if pid is not initPid:
+            await connections[pid].send_text(json.dumps({"type":"challenge-win", "data":True, "initiator":initPid}))
+            
 
 
-# ********** Game Methods **********
+
+
+# ********** Socket Disconnect/Message Methods **********
 
 async def onMessage(socket):
 
@@ -177,11 +195,6 @@ async def onMessage(socket):
     except WebSocketDisconnect:
         manageDisconnect(pid, socket)
 
-async def startGame():
-    # Send a push message to all active players    
-    for pid in connections: 
-        connections[pid]["connection"].send_text(json.dumps({"type":"gamestate", "value":"start"}))
-
 async def manageDisconnect(pid, socket):
     game.removePlayer(pid)
 
@@ -189,7 +202,7 @@ async def manageDisconnect(pid, socket):
     TODO: 
     => Currently active player has to be reselected.
     => sendPlayerlist() needs to return the nameselection (=> playersequence) if there is one already present.
-    
+
     '''
 
 
