@@ -57,20 +57,28 @@ export class GameService {
     console.log(obj);
 
     switch(obj.type) {
+      // Set a new Playerlist
       case "playerlist":
         this.playerlist = obj.data;
         console.log(this.uiRef.setPlayerList(this.playerlist));
         break;
+      // Open a Dialog where players can suggest names for the next round
       case "name-poll":
         console.log("Opening Name-Dialog");
         this.uiRef.processNamePoll(); 
         break;
+      // Set the targetNames (The ones that need to be guessed) for the players
       case "player-sequence":
         this.addTargetsToPlayers(obj.data);
         break;
+      // Hightlight the next player 
       case "next-player":
         this.changeActivePlayer(obj.data);
         break;
+      // Open dialog to verify the "guessed" name by another player
+      case "challenge-win":
+        let initp = this.playerlist.find(x => x.pid === obj.initiator);
+        this.uiRef.processWinChallenge(obj.data, initp.target, initp.name);
     }
   }
 
@@ -107,7 +115,10 @@ export class GameService {
 
   sendNameSuggestion(name: string) {
     this.sendSocketMessage(JSON.stringify({ "type":"name-suggestion", "value":name }));
+  }
 
+  sendWinChallenge(name: string) {
+    this.sendSocketMessage(JSON.stringify({ "type":"challenge-win", "value":name }));
   }
   
 
