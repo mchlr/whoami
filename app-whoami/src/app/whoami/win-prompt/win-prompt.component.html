@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Jemand weiß wie er/sie heißt</h1>
+<div mat-dialog-content>
+  <p>{{this.data.initiatorName}} denkt, ihren/seinen Namen erraten zu haben. </p>
+  <p>Was denkst du?</p>
+
+  <mat-label>Geratener Name: {{this.data.challengeName}}</mat-label> <br />
+  <mat-label>Tatsächlicher Name: {{this.data.actualName}}</mat-label>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="this.suggestion" cdkFocusInitial>Fertig</button>
+</div>
