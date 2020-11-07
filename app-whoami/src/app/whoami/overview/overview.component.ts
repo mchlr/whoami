@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GameService } from '../service/game.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NamePromptComponent } from "../name-prompt/name-prompt.component";
+import { WinPromptComponent } from '../win-prompt/win-prompt.component';
 
 
 @Component({
@@ -18,7 +19,7 @@ export class OverviewComponent implements OnInit {
 
   public hasSuggestedName = false;
   public playerlist = [];
-  
+
 
   ngOnInit() {
     this.service.setUiReference(this);
@@ -54,13 +55,29 @@ export class OverviewComponent implements OnInit {
   }
 
   public processNamePoll() {
-    if(!this.hasSuggestedName) {
+    if (!this.hasSuggestedName) {
       this.dialog.open(NamePromptComponent).afterClosed().subscribe(result => {
-        this.hasSuggestedName = true;
-        this.service.sendNameSuggestion(result);
+        if(result !== undefined) {
+          this.hasSuggestedName = true;
+          this.service.sendNameSuggestion(result);
+        }
       })
     }
   }
+
+  public processWinChallenge(nProp, nActual, initName) {
+    // nProp = Name Proposed 
+    this.dialog.open(WinPromptComponent, {
+      data: { "challengeName": nProp, "actualName": nActual, "initiatorName": initName }
+    }).afterClosed().subscribe(result => {
+      console.log("WinPrompt closed! Result: ", result);
+      //this.service.sendNameSuggestion(result);
+    })
+
+  }
+
+
+
 
 
 }
