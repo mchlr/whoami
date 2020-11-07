@@ -67,6 +67,11 @@ class WhoAmI:
                 return self.getPlayerByIndex(self.currentPlayerIdx)
 
 
+    def winPlayer(self, pId):
+        tar = self.getPlayerByPid(pId)
+        self.playersequence.remove(tar)
+        self.ranking.append(tar)
+
     def getPlayerByIndex(self, pIdx):
         return self.playersequence[pIdx]
 
@@ -93,10 +98,7 @@ class WhoAmI:
         return len(self.playerlist)
 
 
-    def winPlayer(self, pId):
-        tar = self.getPlayerByPid(pId)
-        self.playersequence.remove(tar)
-        self.ranking.append(tar)
+    
 
 
     
