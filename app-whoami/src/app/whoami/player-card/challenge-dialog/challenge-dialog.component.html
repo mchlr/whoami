@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Wer bist du?</h1>
+<div mat-dialog-content>
+    Hier kannst du den Namen eingeben, der du denkst zu sein. 
+    Sobald du den Namen abschickst wird er allen Spielern zur Kontrolle vorgelegt. 
+    Diese entscheiden dann, ob du gewinnst!
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput placeholder="z.B. Rainer Winkler" [(ngModel)]="this.challengeName">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="this.challengeName" cdkFocusInitial>Abschicken!</button>
+</div>

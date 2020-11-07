@@ -3,9 +3,10 @@
     <mat-card-subtitle>{{ player.name }}</mat-card-subtitle>
     <mat-card-content>
         <div *ngIf="this.player.pid === this.service.getOwnPid()">
-            <button (click)="this.answerCorrect()">✔️</button>
-            <button (click)="this.answerWrong()">❌</button>
-            <button>Gewonnen</button>
+            <button mat-button (click)="this.answerCorrect()">✔️</button>
+            <button mat-button (click)="this.answerWrong()">❌</button>
+            <br />
+            <button mat-raised-button color="primary" (click)="this.challengeWin()">Ich bin...</button>
 
             <button (click)="this.logMe()">Log Current Player</button>
         </div>
