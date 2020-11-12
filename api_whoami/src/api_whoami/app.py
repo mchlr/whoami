@@ -5,7 +5,7 @@ import time
 import os
 from typing import List
 
-from starlette.websockets import WebSocketDisconnect
+from starlette.websockets import WebSocketState 
 from whoami import GameState, WhoAmI
 import jwt
 import json
@@ -62,7 +62,7 @@ class Actions():
             print("=> ProcessNameSuggestion(val, pid)")
             await Actions.processNameSuggestion(val, pid)
 
-        if parse is MessageType.WINCHALLENGE:
+        if parsed is MessageType.WINCHALLENGE:
             print("=> ProcessWinChallenge")
             await Actions.challengeWin(val, pid)
 
@@ -136,7 +136,10 @@ async def websocket_endpoint(playerId: str, websocket: WebSocket):
     connections[playerId] = websocket;
 
     while True:
-        await onMessage(websocket)
+        stat = await onMessage(websocket)
+        if(not stat):
+            print("Breaking onMessage-Loop")
+            break
 
 
 # Notify current players about a new player
@@ -190,22 +193,44 @@ async def onMessage(socket):
 
     # Throws exception, if the socket is closed; 
     try:
-        data = await socket.receive_json()
-        await Actions.eval(data["type"], data["value"], pid)
+        if(socket.client_state is WebSocketState.CONNECTED):
+            data = await socket.receive_json()
+            await Actions.eval(data["type"], data["value"], pid)
+
+        # Think about not removing a player upon disconnect
+        if(socket.client_state is WebSocketState.DISCONNECTED):
+            await manageDisconnect(pid, socket)
+            return False
+
     except WebSocketDisconnect:
-        manageDisconnect(pid, socket)
+        await manageDisconnect(pid, socket)
 
 async def manageDisconnect(pid, socket):
-    game.removePlayer(pid)
-
     '''
     TODO: 
     => Currently active player has to be reselected.
     => sendPlayerlist() needs to return the nameselection (=> playersequence) if there is one already present.
-
     '''
 
+    if(pid in [i["pid"] for i in game.getPlayerList()]):
 
-    del connections[pid]
-    await socket.close()
-    await sendPlayerlist()
+        print(str(pid) + " disconnected from server.")
+        game.removePlayer(pid)
+        del connections[pid]
+        print("Removed player+connection")
+
+        await socket.close()
+        print("Closed connection")
+        await sendPlayerlist()
+        print("Sent updated playerlist")
+        print("----- Disconnect handeld successfully! -----")
+    else:
+        print("Invalid pid: " + str(pid))
+        return 
+
+
+
+
+
+
+    
