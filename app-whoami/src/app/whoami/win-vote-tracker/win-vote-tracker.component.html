@@ -7,13 +7,19 @@
         <mat-label>Fortschritt</mat-label>
 
         <div class="vote-container">
-            <mat-card class="yes-votes">
+            <mat-card [className]="(this.voteResult !== undefined && this.voteResult === true) ? 'yes-votes mat-card pulse' : 'yes-votes mat-card'">
                 <mat-card-title>✔️-Stimmen</mat-card-title>
-                <mat-card-content><a>Anzahl: {{this.yesVotes}}</a></mat-card-content>
+                <mat-card-content>
+                    <h3 *ngIf="this.voteResult !== undefined && this.voteResult === true">Gewonnen!</h3>
+                    <a>Anzahl: {{this.yesVotes}}</a>
+                </mat-card-content>
             </mat-card>
-            <mat-card class="no-votes"> 
+            <mat-card [className]="(this.voteResult !== undefined && this.voteResult !== true) ? 'no-votes mat-card pulse' : 'no-votes mat-card'"> 
                 <mat-card-title>❌-Stimmen</mat-card-title>
-                <mat-card-content><a>Anzahl: {{this.noVotes}}</a></mat-card-content>
+                <mat-card-content>
+                    <h3 *ngIf="this.voteResult !== undefined && this.voteResult !== true">Gewonnen!</h3>
+                    <a>Anzahl: {{this.noVotes}}</a>
+                </mat-card-content>
             </mat-card> 
         </div>   
     </mat-card-content>

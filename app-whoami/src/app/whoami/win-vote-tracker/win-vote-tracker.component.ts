@@ -11,8 +11,9 @@ export class WinVoteTrackerComponent implements OnInit {
   public yesVotes: number;
   public noVotes: number;
 
-  @Input() voteResults;
-  @Input() totalPlayers;
+  @Input() voteResults: [];
+  @Input() totalPlayers: number;
+  @Input() voteResult: boolean;
 
   constructor() { }
 
@@ -32,6 +33,7 @@ export class WinVoteTrackerComponent implements OnInit {
     console.log("YES: " + this.yesVotes);
     console.log("NO: " + this.noVotes);
     console.log("PROGRESS: " + this.progress);
+    console.log("==> VOTE RESULT: ", this.voteResult);
   }
 
 }
