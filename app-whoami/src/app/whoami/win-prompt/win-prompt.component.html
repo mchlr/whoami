@@ -1,11 +1,18 @@
-<h1 mat-dialog-title>Jemand weiß wie er/sie heißt</h1>
+<h1 mat-dialog-title>Jemand denkt gewonnen zu haben! <mat-icon style="float:right;">error_outline</mat-icon></h1>
 <div mat-dialog-content>
-  <p>{{this.data.initiatorName}} denkt, ihren/seinen Namen erraten zu haben. </p>
-  <p>Was denkst du?</p>
-
-  <mat-label>Geratener Name: {{this.data.challengeName}}</mat-label> <br />
-  <mat-label>Tatsächlicher Name: {{this.data.actualName}}</mat-label>
+  <b>{{this.data.initiatorName}}</b> denkt, ihren/seinen Namen erraten zu haben. Was denkst du?
+  <br />
+  <ul>
+    <li>
+      <mat-label><b>Geratener Name:</b> {{this.data.challengeName}}</mat-label>
+    </li>
+    <li>
+      <mat-label><b>Tatsächlicher Name:</b> {{this.data.actualName}}</mat-label>
+    </li>
+  </ul>
 </div>
-<div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="this.suggestion" cdkFocusInitial>Fertig</button>
+<div class="buttons" mat-dialog-actions>
+  <!-- Vote if the guess is right/wrong (true/false) -->
+  <button mat-button [mat-dialog-close]="true">✔️</button>
+  <button mat-button [mat-dialog-close]="false">❌</button> 
 </div>
