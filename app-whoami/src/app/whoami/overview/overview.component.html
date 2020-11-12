@@ -9,7 +9,7 @@
 </mat-card>
 
 <div class="win-voting-container" *ngIf="this.winVoting">
-    <app-win-vote-tracker [voteResults]="this.votinglist" [totalPlayers]="this.service.getPlayerList().length"></app-win-vote-tracker>
+    <app-win-vote-tracker [voteResults]="this.votinglist" [totalPlayers]="this.service.getPlayerList().length" [voteResult]="this.votingResult"></app-win-vote-tracker>
 </div>
 
 <h3>current playaz</h3>
@@ -24,3 +24,4 @@
 <button (click)="this.processNamePoll()">Open NamePoll-Prompt</button>
 <button (click)="this.processWinChallenge('Nicht-Michael', 'Auch-Nicht-Michael', 'Michael')">Open WinChallenge-Prompt</button>
 <button (click)="this.setWinVotingState(true)">Set winVote-State</button>
+<button (click)="this.toggleElectionResult()">Election win</button>

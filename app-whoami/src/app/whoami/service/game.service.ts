@@ -81,7 +81,12 @@ export class GameService {
         this.uiRef.processWinChallenge(obj.data, initp.target, initp.name);
         break;
       case "challenge-win-process":
+        console.log("Got challenge-win-process: ", obj.data);
         this.uiRef.setVotingList(obj.data);
+        break;
+      case "challenge-win-result":
+        console.log("Got challenge-win-result: ", obj.data);
+        this.uiRef.setVotingResult(obj.data)
         break;
     }
   }

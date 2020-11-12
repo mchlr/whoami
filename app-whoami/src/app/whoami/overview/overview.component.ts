@@ -16,6 +16,7 @@ export class OverviewComponent implements OnInit {
 
   public winVoting = false;
   public votinglist = []
+  public votingResult = undefined;
 
   constructor(
     public service: GameService,
@@ -97,8 +98,21 @@ export class OverviewComponent implements OnInit {
     this.votinglist = list;
   }
 
+  public setVotingResult(res) {
+    this.votingResult = res;
+  }
 
 
+// Debug Functions
+
+  public toggleElectionResult() {
+    if(this.votingResult) {
+      this.setVotingResult(false);
+    }
+    else {
+      this.setVotingResult(true);
+    }
+  }
 
 
 }
