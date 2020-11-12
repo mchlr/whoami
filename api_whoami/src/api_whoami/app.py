@@ -77,7 +77,17 @@ class Actions():
             await sendNamePoll()
         if val == "end":
             print("TODO: Implement stuff when the current game is finished")
-            
+        
+        
+        # Create a new MessageType for triggering a complete reset
+        '''    
+        if val == "reset":
+            # Reset the entire game + disconnect everybody
+            game.resetGame()
+            await manageDisconnect(pid, connections[pid] for pid in connections)
+        '''
+
+
     async def processAnswer(val, pid):
         if not val:
             game.nextPlayer(pid)
@@ -106,8 +116,10 @@ class Actions():
             if(ret):
                 # Send notification about win to all players
                 print(str(pid) + " Win-Challenge has been ACCEPTED!")
+                await sendWinChallengeEnd(True)
             else: 
                 print(str(pid) + " Win-Challenge has been REJECTED!")
+                await sendWinChallengeEnd(False)
         else:
             print("Ret == None || Voting still in progress!")
         
@@ -198,6 +210,10 @@ async def sendWinChallengeResponseInfo(list):
     for pid in connections:
         await connections[pid].send_text(json.dumps({"type":"challenge-win-process", "data":list}))
             
+async def sendWinChallengeEnd(val):
+    for pid in connections:
+        await connections[pid].send_text(json.dumps({"type":"challenge-win-result", "data":val}))
+    
 
 
 
