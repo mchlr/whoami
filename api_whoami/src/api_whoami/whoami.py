@@ -94,16 +94,9 @@ class WhoAmI:
     def resolveWinChallenge(self, isWinner):
         if(isWinner):
             winp = self.getPlayerByPid(self.winChallengerPid)
-
-            print("NEW WINNER:")
-            print(winp)
-
             self.removePlayerFromSequence(winp)
             self.ranking.append(winp)
 
-            print("NEW RANKING:")
-            print(self.ranking)
-        
         # Reset properties for next win challenge
         self.winChallengerPid = ""
         self.winChallengeResponses = []
@@ -119,8 +112,6 @@ class WhoAmI:
     def getPlayerByPid(self, pId):
         if(len(self.playersequence) > 0):
             for x in self.playersequence:
-                print("getPlayerbyPid -> This doesnt seem to work!")
-                print(str(x["pid"]) + " == " + str(pId) + " ????")
                 if x["pid"] == pId:
                     return x
             return -1
