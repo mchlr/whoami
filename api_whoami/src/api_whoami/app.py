@@ -39,6 +39,7 @@ class MessageType(Enum):
     ANSWER = "answer"
     NAMESUGGESTION = "name-suggestion"
     WINCHALLENGE = "challenge-win"
+    WINCHALLENGERESPONSE = "challenge-win-response"
 
 class Actions():
     # tt = type: MessageType
@@ -66,6 +67,10 @@ class Actions():
             print("=> ProcessWinChallenge")
             await Actions.challengeWin(val, pid)
 
+        if parsed is MessageType.WINCHALLENGERESPONSE:
+            print("Response for win Challenge!")
+            await Actions.processWinChallengeResponse(val, pid)
+
 
     async def processState(val, pid):
         if val == "start":
@@ -92,9 +97,19 @@ class Actions():
             print()
 
     async def challengeWin(val, pid):
-        sendWinChallenge(pid, val)
-        
+        await sendWinChallenge(pid, val)
 
+    async def processWinChallengeResponse(val, pid):
+        await sendWinChallengeResponseInfo(game.addWinChallengeResponse(val, pid))
+        ret = game.assertWin()
+        if(ret is not None):
+            if(ret):
+                # Send notification about win to all players
+                print(str(pid) + " Win-Challenge has been ACCEPTED!")
+            else: 
+                print(str(pid) + " Win-Challenge has been REJECTED!")
+        else:
+            print("Ret == None || Voting still in progress!")
         
 
 def main():
@@ -176,7 +191,12 @@ async def sendWinChallenge(initPid, name):
     print("Sending win challenge...")
     for pid in connections:
         if pid is not initPid:
-            await connections[pid].send_text(json.dumps({"type":"challenge-win", "data":True, "initiator":initPid}))
+            await connections[pid].send_text(json.dumps({"type":"challenge-win", "data":name, "initiator":initPid}))
+
+async def sendWinChallengeResponseInfo(list):
+    print("Sending win challenge response informations...")
+    for pid in connections:
+        await connections[pid].send_text(json.dumps({"type":"challenge-win-process", "data":list}))
             
 
 
@@ -196,6 +216,7 @@ async def onMessage(socket):
         if(socket.client_state is WebSocketState.CONNECTED):
             data = await socket.receive_json()
             await Actions.eval(data["type"], data["value"], pid)
+            return True
 
         # Think about not removing a player upon disconnect
         if(socket.client_state is WebSocketState.DISCONNECTED):
@@ -204,6 +225,7 @@ async def onMessage(socket):
 
     except WebSocketDisconnect:
         await manageDisconnect(pid, socket)
+        return False
 
 async def manageDisconnect(pid, socket):
     '''

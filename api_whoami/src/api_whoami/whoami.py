@@ -2,7 +2,7 @@ from collections import namedtuple
 import random
 from enum import Enum
 
-
+# This doesn't seem to be neccessary
 class GameState(Enum):
     START = "game-start"
     FINISH = "game-finished"
@@ -15,8 +15,11 @@ class WhoAmI:
     playerlist = {}
     playersequence  = []
     namelist = []
-    currentPlayerIdx = 0
     ranking = []
+    currentPlayerIdx = 0
+
+    winChallengerPid = ""
+    winChallengeResponses = []
 
     # Initializes the player "model";
     def addPlayer(self, pid, n):
@@ -71,6 +74,19 @@ class WhoAmI:
         tar = self.getPlayerByPid(pId)
         self.playersequence.remove(tar)
         self.ranking.append(tar)
+
+    def addWinChallenge(self, pId):
+        self.winChallengerPid = pId
+
+    def addWinChallengeResponse(self, val, pId):
+        self.winChallengeResponses.append({"pid": pId, "value": val})
+        return self.winChallengeResponses
+
+    def assertWin(self):
+        if((len(self.winChallengeResponses) == len(self.playerlist))):
+            return (all([i["value"] for i in self.winChallengeResponses]) is True)
+        else: 
+            return None
 
     def getPlayerByIndex(self, pIdx):
         return self.playersequence[pIdx]
