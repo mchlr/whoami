@@ -83,8 +83,13 @@ class WhoAmI:
         return self.winChallengeResponses
 
     def assertWin(self):
-        if((len(self.winChallengeResponses) == len(self.playerlist))):
-            return (all([i["value"] for i in self.winChallengeResponses]) is True)
+        if((len(self.winChallengeResponses) + 1 == len(self.playerlist))):
+            tc = 0
+            for x in self.winChallengeResponses:
+                if(x["value"]):
+                    tc += 1
+
+            return (tc / len(self.winChallengeResponses)) >= .5
         else: 
             return None
 
@@ -101,9 +106,6 @@ class WhoAmI:
         else:
             return 0
 
-
-
-
     def getCurrentPlayer(self):
         return self.playersequence[self.currentPlayerIdx]   
 
@@ -113,11 +115,14 @@ class WhoAmI:
     def getPlayerCount(self):
         return len(self.playerlist)
 
-
-    
-
-
-    
+    def resetGame(self):
+        self.playerlist = {}
+        self.playersequence = []
+        self.namelist = []
+        self.ranking = []
+        self.winChallengeResponses = []
+        self.currentPlayerIdx = 0
+        self.winChallengerPid = ""
 
 
         
