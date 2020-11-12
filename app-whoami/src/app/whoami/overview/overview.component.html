@@ -1,20 +1,26 @@
-<h4>plz enter ur name:</h4>
+<h3>plz enter ur name:</h3>
 <input #playerName (keyup.enter)="this.registerName(playerName.value)">
 
-<button (click)="this.sendStart()">Send Start</button>
+<mat-card>
+    <mat-card-title>Spielsteuerung</mat-card-title>
+    <mat-card-content>
+        <button mat-raised-button color="primary" (click)="this.sendStart()">Spiel starten!</button>
+    </mat-card-content>
+</mat-card>
 
-<button (click)="this.processNamePoll()">Open NamePoll-Prompt</button>
-<button (click)="this.processWinChallenge('Adolf Hitler', 'Heinricht Himmler', 'Michael')">Open WinChallenge-Prompt</button>
+<div class="win-voting-container" *ngIf="this.winVoting">
+    <app-win-vote-tracker [voteResults]="this.votinglist" [totalPlayers]="this.service.getPlayerList().length"></app-win-vote-tracker>
+</div>
 
-
-
-<h4>current playaz</h4>
+<h3>current playaz</h3>
 <div class="grid-container">
     <app-player-card class="grid-item" *ngFor="let playa of this.service.getPlayerList()" [player]=playa></app-player-card>
 </div>
 
 
 
-<div>
-    
-</div>
+
+
+<button (click)="this.processNamePoll()">Open NamePoll-Prompt</button>
+<button (click)="this.processWinChallenge('Nicht-Michael', 'Auch-Nicht-Michael', 'Michael')">Open WinChallenge-Prompt</button>
+<button (click)="this.setWinVotingState(true)">Set winVote-State</button>

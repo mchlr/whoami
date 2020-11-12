@@ -60,7 +60,6 @@ export class GameService {
       // Set a new Playerlist
       case "playerlist":
         this.playerlist = obj.data;
-        console.log(this.uiRef.setPlayerList(this.playerlist));
         break;
       // Open a Dialog where players can suggest names for the next round
       case "name-poll":
@@ -77,8 +76,13 @@ export class GameService {
         break;
       // Open dialog to verify the "guessed" name by another player
       case "challenge-win":
+        // Find the initiator by her/his pid;
         let initp = this.playerlist.find(x => x.pid === obj.initiator);
         this.uiRef.processWinChallenge(obj.data, initp.target, initp.name);
+        break;
+      case "challenge-win-process":
+        this.uiRef.setVotingList(obj.data);
+        break;
     }
   }
 
@@ -118,7 +122,13 @@ export class GameService {
   }
 
   sendWinChallenge(name: string) {
+    // Set the winVoting-state for the initiator;
+    this.uiRef.setWinVotingState(true);
     this.sendSocketMessage(JSON.stringify({ "type":"challenge-win", "value":name }));
+  }
+
+  sendWinChallengeResponse(result: boolean) {
+    this.sendSocketMessage(JSON.stringify({ "type":"challenge-win-response", "value":result }));
   }
   
 

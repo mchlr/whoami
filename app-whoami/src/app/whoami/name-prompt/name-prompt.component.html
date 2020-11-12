@@ -1,11 +1,11 @@
-<h1 mat-dialog-title>Namensvorschlag abgeben</h1>
+<h1 mat-dialog-title>Namensvorschlag abgeben <mat-icon style="float:right;">note_add</mat-icon></h1>
 <div mat-dialog-content>
-    Bitte einen Namen eintragen, welcher im Anschluss zufällig unter allen Spielern verlost wird!
-  <mat-form-field>
-    <mat-label>Name</mat-label>
+  Schlag einen Namen vor der dann unter allen Spielern zufällig verlost wird!
+  <mat-form-field style="margin-top:10px; width: 100%;">
+    <mat-label>Namensvorschlag</mat-label>
     <input matInput placeholder="z.B. Wladimir Putin" [(ngModel)]="this.suggestion">
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="this.suggestion" cdkFocusInitial>Fertig</button>
+  <button mat-button [mat-dialog-close]="this.suggestion" cdkFocusInitial>Abschicken</button>
 </div>

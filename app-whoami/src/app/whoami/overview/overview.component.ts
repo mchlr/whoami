@@ -11,18 +11,25 @@ import { WinPromptComponent } from '../win-prompt/win-prompt.component';
   styleUrls: ['./overview.component.scss']
 })
 export class OverviewComponent implements OnInit {
+  
+  public hasSuggestedName = false;
+
+  public winVoting = false;
+  public votinglist = []
 
   constructor(
     public service: GameService,
     public dialog: MatDialog
   ) { }
 
-  public hasSuggestedName = false;
-  public playerlist = [];
-
 
   ngOnInit() {
     this.service.setUiReference(this);
+
+    // DEBUG OPTIONS
+    // this.votinglist = [{"pid": 123, "value": false}, {"pid": 123, "value": false}, {"pid": 123, "value": false},
+    // {"pid": 123, "value": true},{"pid": 123, "value": true},{"pid": 123, "value": true},{"pid": 123, "value": true},{"pid": 123, "value": true}];
+    // this.winVoting = true;
   }
 
   public registerName(name) {
@@ -32,11 +39,6 @@ export class OverviewComponent implements OnInit {
     // Do stuff with service here;
     this.service.registerName(name);
 
-  }
-
-  public setPlayerList(pl) {
-    console.log("Got new Playerlist! ", pl);
-    this.playerlist = pl;
   }
 
   public sendStart() {
@@ -56,10 +58,14 @@ export class OverviewComponent implements OnInit {
 
   public processNamePoll() {
     if (!this.hasSuggestedName) {
-      this.dialog.open(NamePromptComponent).afterClosed().subscribe(result => {
-        if(result !== undefined) {
+      this.dialog.open(NamePromptComponent).beforeClosed().subscribe(result => {
+        if(result !== undefined && !this.hasSuggestedName) {
           this.hasSuggestedName = true;
           this.service.sendNameSuggestion(result);
+        }
+        else {
+          // Prevent the dialog from closing;
+          this.processNamePoll();
         }
       })
     }
@@ -69,11 +75,26 @@ export class OverviewComponent implements OnInit {
     // nProp = Name Proposed 
     this.dialog.open(WinPromptComponent, {
       data: { "challengeName": nProp, "actualName": nActual, "initiatorName": initName }
-    }).afterClosed().subscribe(result => {
-      console.log("WinPrompt closed! Result: ", result);
-      //this.service.sendNameSuggestion(result);
-    })
+    }).beforeClosed().subscribe(result => {
+      if(result !== undefined) {
+        console.log("WinPrompt closed! Result: ", result);
+        this.service.sendWinChallengeResponse(result);
+        this.winVoting = true
+      }
+      else {
+        this.processWinChallenge(nProp, nActual, initName);
+      }
 
+    })
+  }
+
+  public setWinVotingState(s) {
+    this.winVoting = s;
+  }
+  
+  public setVotingList(list) {
+    console.log("Got new Votinglist: ", list);
+    this.votinglist = list;
   }
 
 
