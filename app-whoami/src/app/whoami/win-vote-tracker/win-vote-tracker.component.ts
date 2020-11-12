@@ -11,11 +11,13 @@ export class WinVoteTrackerComponent implements OnInit {
   public yesVotes: number;
   public noVotes: number;
 
-  @Input() voteResults: [];
+  @Input() voteResults: any[];
   @Input() totalPlayers: number;
   @Input() voteResult: boolean;
 
   constructor() { }
+
+  ngOnInit() {}
 
   ngOnChanges() {
     // Reset counter since this components always gets the full list;
