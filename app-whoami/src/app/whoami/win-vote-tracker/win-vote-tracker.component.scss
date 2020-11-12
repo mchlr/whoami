@@ -1,0 +1,24 @@
+.vote-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.vote-container mat-card {
+    text-align: center;
+}
+
+.vote-container mat-card a {
+    font-size: larger;
+}
+
+.yes-votes {
+    margin-right: 5px;
+    width: 45%;
+}
+
+.no-votes {
+    margin-left: 5px;
+    width: 45%;
+}

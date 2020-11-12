@@ -1,0 +1,20 @@
+<mat-card>
+    <mat-card-title>
+        Wahlergebnisse
+    </mat-card-title>
+    <mat-card-content>
+        <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+        <mat-label>Fortschritt</mat-label>
+
+        <div class="vote-container">
+            <mat-card class="yes-votes">
+                <mat-card-title>✔️-Stimmen</mat-card-title>
+                <mat-card-content><a>Anzahl: {{this.yesVotes}}</a></mat-card-content>
+            </mat-card>
+            <mat-card class="no-votes"> 
+                <mat-card-title>❌-Stimmen</mat-card-title>
+                <mat-card-content><a>Anzahl: {{this.noVotes}}</a></mat-card-content>
+            </mat-card> 
+        </div>   
+    </mat-card-content>
+</mat-card>
