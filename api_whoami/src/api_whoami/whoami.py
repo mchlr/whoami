@@ -32,6 +32,7 @@ class WhoAmI:
         # Works fine!
         del self.playerlist[pid]
         test = self.getPlayerByPid(pid)
+        # TODO: Whats dis
         if test is not 0 or not -1 :
             print("Test? ", test)
             self.playersequence.remove(test)
@@ -59,6 +60,9 @@ class WhoAmI:
 
 
     # Methods for cycling through players
+    def _nextPlayer(self):
+        self.nextPlayer(self.getPlayerByIndex(self.currentPlayerIdx)["pid"])
+
     def nextPlayer(self, pid):
         if(self.getPlayerByIndex(self.currentPlayerIdx)["pid"] is pid):
             self.currentPlayerIdx += 1
@@ -68,12 +72,6 @@ class WhoAmI:
                 # Cycle complete
                 self.currentPlayerIdx = 0
                 return self.getPlayerByIndex(self.currentPlayerIdx)
-
-
-    def winPlayer(self, pId):
-        tar = self.getPlayerByPid(pId)
-        self.playersequence.remove(tar)
-        self.ranking.append(tar)
 
     def addWinChallenge(self, pId):
         self.winChallengerPid = pId
@@ -92,6 +90,28 @@ class WhoAmI:
             return (tc / len(self.winChallengeResponses)) >= .5
         else: 
             return None
+        
+    def resolveWinChallenge(self, isWinner):
+        if(isWinner):
+            winp = self.getPlayerByPid(self.winChallengerPid)
+
+            print("NEW WINNER:")
+            print(winp)
+
+            self.removePlayerFromSequence(winp)
+            self.ranking.append(winp)
+
+            print("NEW RANKING:")
+            print(self.ranking)
+        
+        # Reset properties for next win challenge
+        self.winChallengerPid = ""
+        self.winChallengeResponses = []
+
+    def removePlayerFromSequence(self, player):
+        if(self.getCurrentPlayer() == player):
+            self._nextPlayer()
+        self.playersequence.remove(player)
 
     def getPlayerByIndex(self, pIdx):
         return self.playersequence[pIdx]
@@ -99,7 +119,8 @@ class WhoAmI:
     def getPlayerByPid(self, pId):
         if(len(self.playersequence) > 0):
             for x in self.playersequence:
-                print("iter: ", x)
+                print("getPlayerbyPid -> This doesnt seem to work!")
+                print(str(x["pid"]) + " == " + str(pId) + " ????")
                 if x["pid"] == pId:
                     return x
             return -1

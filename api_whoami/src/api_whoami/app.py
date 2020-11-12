@@ -107,6 +107,7 @@ class Actions():
             print()
 
     async def challengeWin(val, pid):
+        game.addWinChallenge(pid)
         await sendWinChallenge(pid, val)
 
     async def processWinChallengeResponse(val, pid):
@@ -116,9 +117,11 @@ class Actions():
             if(ret):
                 # Send notification about win to all players
                 print(str(pid) + " Win-Challenge has been ACCEPTED!")
+                game.resolveWinChallenge(True)
                 await sendWinChallengeEnd(True)
             else: 
                 print(str(pid) + " Win-Challenge has been REJECTED!")
+                game.resolveWinChallenge(False)
                 await sendWinChallengeEnd(False)
         else:
             print("Ret == None || Voting still in progress!")
